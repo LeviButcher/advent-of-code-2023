@@ -15,7 +15,7 @@ instance Show Cubes where
   show (Cubes red green blue) = "R" ++ show red ++ "-G" ++ show green ++ "-B" ++ show blue
 
 instance Semigroup Cubes where
-  (Cubes r g b) <> (Cubes rr gg bb) = Cubes (r+rr) (g + gg) (b + bb) -- Some way to do addition without destructing
+  (Cubes r g b) <> (Cubes rr gg bb) = Cubes (r+rr) (g + gg) (b + bb) 
 
 instance Monoid Cubes where
   mempty = Cubes 0 0 0
@@ -47,9 +47,6 @@ parseGameLine s = (gameNumber, parseDrawSeries series)
 
 parseDrawSeries :: String -> [Cubes]
 parseDrawSeries = fmap parseDraws . splitOn "; "
-
-combineCubes :: Cubes -> Cubes -> Cubes
-combineCubes (Cubes r g b) (Cubes rr gg bb) = Cubes (r + rr) (g + gg) (b + bb)
 
 parseDraws :: String -> Cubes
 parseDraws = mconcat . fmap parseCube . splitOn ", "
