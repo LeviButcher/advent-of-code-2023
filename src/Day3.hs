@@ -2,7 +2,6 @@ module Day3 (
     run
 ) where
 
-import Control.Monad
 import Data.Char (isDigit)
 import Text.Read (readMaybe)
 
@@ -47,6 +46,7 @@ isDigitsNextToSymbol (Digits _ start end) s = elem start validSpots || elem end 
   where
     validSpots = possibleMoves (pos s)
 
+isSymbolNextToDigit :: Symbol -> Digits -> Bool
 isSymbolNextToDigit = flip isDigitsNextToSymbol
 
 -- Filter digits to only those next to symbols
@@ -111,6 +111,7 @@ performPart2 input = do
   let answer2 = sum res
   print answer2
 
+run :: IO ()
 run = do
   let exampleString = unlines example
   performPart1 exampleString

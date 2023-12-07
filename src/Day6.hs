@@ -5,7 +5,6 @@ module Day6 (part1, part2) where
 import Data.List (stripPrefix)
 import Data.Maybe (fromJust)
 import Data.List.Split (splitOn)
-import Data.Char (isSpace)
 
 data Race = Race
   { time :: Int,
@@ -32,6 +31,7 @@ combine (Race t d) (Race tt dd) = Race (read (show t ++ show tt)) (read $ show d
 
 example = ["Time:      7  15   30", "Distance:  9  40  200"]
 
+file :: IO String
 file = readFile "inputs/day6.txt"
 
 part1 = do

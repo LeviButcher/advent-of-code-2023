@@ -58,7 +58,7 @@ parseInput s = (numbers, maps)
 file = readFile "inputs/day5.txt"
 
 part1 = do
-  rawS <- file
+  rawS <- readFile "inputs/day6.txt"
   let (numbers, maps) = parseInput rawS
 
   print "part1"
@@ -70,7 +70,7 @@ rangedNumbers [] = []
 rangedNumbers (x : y : xs) = [x .. (x + (y - 1))] ++ rangedNumbers xs
 
 part2 = do
-  rawS <- file
+  rawS <- readFile "inputs/day6.txt"
   let (numbers, maps) = parseInput rawS
   let ranged = rangedNumbers numbers
 

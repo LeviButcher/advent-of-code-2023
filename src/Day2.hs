@@ -2,7 +2,6 @@ module Day2 (
     run
 ) where
 
-import Data.Char
 import Data.List (stripPrefix)
 import Data.List.Split
 import Data.Maybe (fromJust)
@@ -13,19 +12,17 @@ data Cubes = Cubes
     blue :: Int
   }
 
-type Draws = [Cubes]
-
 instance Show Cubes where
-  show (Cubes red green blue) = "R" ++ show red ++ "-G" ++ show green ++ "-B" ++ show blue
+  show (Cubes r g b) = "R" ++ show r ++ "-G" ++ show g ++ "-B" ++ show b
 
 instance Semigroup Cubes where
-  (Cubes r g b) <> (Cubes rr gg bb) = Cubes (r+rr) (g + gg) (b + bb) 
+  (Cubes r g b) <> (Cubes rr gg bb) = Cubes (r+rr) (g + gg) (b + bb)
 
 instance Monoid Cubes where
   mempty = Cubes 0 0 0
 
 validGameSubset :: Cubes -> [Cubes] -> Bool
-validGameSubset max = and . fmap (validDraw max)
+validGameSubset m = all (validDraw m)
 
 minimumBag :: [Cubes] -> Cubes
 minimumBag x = Cubes maxR maxG maxB
@@ -38,10 +35,7 @@ powerCube :: Cubes -> Int
 powerCube x = red x * green x * blue x
 
 validDraw :: Cubes -> Cubes -> Bool
-validDraw max draw = (red max >= red draw) && (green max >= green draw) && (blue max >= blue draw)
-
-dropWhiteSpace :: String -> String
-dropWhiteSpace = dropWhile isSpace
+validDraw m draw = (red m >= red draw) && (green m >= green draw) && (blue m >= blue draw)
 
 parseGameLine :: String -> (Int, [Cubes])
 parseGameLine s = (gameNumber, parseDrawSeries series)

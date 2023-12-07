@@ -8,7 +8,6 @@ module Day1 (
 ) where
 
 import Data.Maybe (isJust)
-import Control.Monad.ST
 import Data.List (tails)
 
 type RawCode = String
@@ -55,9 +54,8 @@ parseCode code = do
 combineCodes :: [Code] -> Int
 combineCodes = sum
 
-example = ["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"]
-example2 = [ "two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen" ]
 
+run :: IO ()
 run = do
   rawFile <- readFile "inputs/day1.txt"
   let codes = readPuzzleInput rawFile
