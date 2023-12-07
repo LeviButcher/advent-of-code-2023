@@ -1,4 +1,5 @@
 module Day2 (
+    run
 ) where
 
 import Data.Char
@@ -72,17 +73,17 @@ examples =
     "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
   ]
 
--- main = do
---   let bag = Cubes 12 13 14
---   let gameSeries = parseGameLine <$> examples
---
---   rawInput <- readFile "day2/input.txt"
---
---   let gameSeries = parseGameLine <$> lines rawInput
---   let res = fmap (validGameSubset bag) <$> gameSeries
---   let answer = sum $ fst <$> filter snd res
---   let minimumCubes = minimumBag . snd <$> gameSeries
---   let answer2 = sum . fmap powerCube $ minimumCubes
---
---   print answer
---   print answer2
+run = do
+  let bag = Cubes 12 13 14
+  let gameSeries = parseGameLine <$> examples
+
+  rawInput <- readFile "inputs/day2.txt"
+
+  let gameSeries = parseGameLine <$> lines rawInput
+  let res = fmap (validGameSubset bag) <$> gameSeries
+  let answer = sum $ fst <$> filter snd res
+  let minimumCubes = minimumBag . snd <$> gameSeries
+  let answer2 = sum . fmap powerCube $ minimumCubes
+
+  print answer
+  print answer2

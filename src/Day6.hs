@@ -1,6 +1,6 @@
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Day6 () where
+module Day6 (part1, part2) where
 
 import Data.List (stripPrefix)
 import Data.Maybe (fromJust)
@@ -32,21 +32,19 @@ combine (Race t d) (Race tt dd) = Race (read (show t ++ show tt)) (read $ show d
 
 example = ["Time:      7  15   30", "Distance:  9  40  200"]
 
+file = readFile "inputs/day6.txt"
+
 part1 = do
-  input <- readFile "day6/input.txt"
+  input <- file
   let races = parseInput input
   let possibleWins = fmap winningHoldTimes races
   let numberOfWins = product . fmap length $ possibleWins
   print numberOfWins 
 
 part2 = do
-  input <- readFile "day6/input.txt"
+  input <- file
   let races = parseInput input
   let realRace = foldl combine (Race 0 0) races 
   let possibleWins = winningHoldTimes realRace
   let numberOfWins = length possibleWins
   print numberOfWins 
-
--- main = do
---   part1
---   part2

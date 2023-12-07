@@ -1,6 +1,8 @@
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Day4 () where
+module Day4 (
+    run
+) where
 
 import Data.Char (isSpace)
 import Data.List
@@ -91,10 +93,10 @@ example2 =
     "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
   ]
 
--- main = do
---   answer1 (unlines example1)
---   answer2 (unlines example2)
---
---   input <- readFile "input.txt"
---   answer1 input
---   answer2 input
+run = do
+  answer1 (unlines example1)
+  answer2 (unlines example2)
+
+  input <- readFile "inputs/day4.txt"
+  answer1 input
+  answer2 input

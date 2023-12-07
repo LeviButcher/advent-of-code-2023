@@ -1,4 +1,6 @@
-module Day3 () where
+module Day3 (
+    run
+) where
 
 import Control.Monad
 import Data.Char (isDigit)
@@ -109,12 +111,12 @@ performPart2 input = do
   let answer2 = sum res
   print answer2
 
--- main = do
---   let exampleString = unlines example
---   performPart1 exampleString
---   performPart2 exampleString
---
---   fileString <- readFile "day3/input.txt"
---
---   performPart1 fileString
---   performPart2 fileString
+run = do
+  let exampleString = unlines example
+  performPart1 exampleString
+  performPart2 exampleString
+
+  fileString <- readFile "inputs/day3.txt"
+
+  performPart1 fileString
+  performPart2 fileString

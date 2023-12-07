@@ -1,6 +1,11 @@
 module Day1 (
-
-)where
+    readPuzzleInput,
+    parseDigits,
+    parsePrefix,
+    parseCode,
+    combineCodes,
+    run
+) where
 
 import Data.Maybe (isJust)
 import Control.Monad.ST
@@ -53,11 +58,10 @@ combineCodes = sum
 example = ["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"]
 example2 = [ "two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen" ]
 
--- main = do
---     -- let res = parseCode <$> example2
---     -- print res
---   rawFile <- readFile "day1/input.txt"
---   let codes = readPuzzleInput rawFile
---   case codes of
---     Just c -> print $ combineCodes c
---     Nothing -> print "Failed to read codes"
+run = do
+  rawFile <- readFile "inputs/day1.txt"
+  let codes = readPuzzleInput rawFile
+  case codes of
+    Just c -> print $ combineCodes c
+    Nothing -> print "Failed to read codes"
+

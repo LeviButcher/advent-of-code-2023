@@ -1,6 +1,6 @@
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Day5 () where
+module Day5 (part1, part2) where
 
 import Data.List (find, findIndex, stripPrefix)
 import Data.List.Split (splitOn)
@@ -55,8 +55,10 @@ parseInput s = (numbers, maps)
     numbers = parseNumbers line1
     maps = parseMapSection <$> splitOn "\n\n" (unlines xs)
 
+file = readFile "inputs/day5.txt"
+
 part1 = do
-  rawS <- readFile "day5/input.txt"
+  rawS <- file
   let (numbers, maps) = parseInput rawS
 
   print "part1"
@@ -68,14 +70,10 @@ rangedNumbers [] = []
 rangedNumbers (x : y : xs) = [x .. (x + (y - 1))] ++ rangedNumbers xs
 
 part2 = do
-  rawS <- readFile "day5/input.txt"
+  rawS <- file
   let (numbers, maps) = parseInput rawS
   let ranged = rangedNumbers numbers
 
   print "part2"
   let res = pipeline maps ranged
   print $ lowest res
-
--- main = do
---   part1
---   part2
