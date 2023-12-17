@@ -41,7 +41,11 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
+  - vector-0.13.1.0@sha256:4650d28eb918812a3158130f833b5ff5020259b28a8f9ee5d28701ce60cf8a16,8997
+  - primitive-0.9.0.0@sha256:1ceb39f67c0e614180f2992a6d30f26603ab2cd23c4f8e25b30213f98807f6f1,3141
+  - vector-stream-0.1.0.0@sha256:8977959d4bec54d9f2c5e9d4baa2cac7ab26e804a72591df8db887e0692ae8ae,1404
   - split-0.2.4
+  # - vector-0.13.1.0@sha256:4650d28eb918812a3158130f833b5ff5020259b28a8f9ee5d28701ce60cf8a16,8997
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

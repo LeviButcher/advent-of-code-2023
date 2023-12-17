@@ -1,4 +1,85 @@
-module Parser (
-) where
+module Parser where
 
+-- Going through Parser turtorial
+-- https://serokell.io/blog/parser-combinators-in-haskell
+import Control.Applicative (Alternative (..))
+import Data.List (nub)
+import Data.Char (isDigit, digitToInt)
 
+-- data Error i e = Error {
+--         erOffset :: Offset,
+--         erError :: ErrorType i e
+--     }
+--   deriving (Eq, Show)
+--
+-- data ErrorType i e
+--   = EndOfInput
+--   | Unexpected i
+--   | Expected i i
+--   | ExpectedEndOfFile i
+--   | CustomError e
+--   | Empty
+--   deriving (Eq, Show)
+--
+-- type Offset = Int
+--
+-- newtype Parser i e a = Parser
+--   { runParser :: [i] -> Offset -> Either [Error i e] (Offset, a, [i])
+--   }
+--
+-- parse :: Parser i e a -> [i] -> Either [Error i e] (Offset, a, [i])
+-- parse p i = runParser p i 0
+--
+-- instance Functor (Parser i e) where
+--   fmap f (Parser p) = Parser $ \input offset -> do
+--     (offset', output, rest) <- p input offset
+--     Right (offset', f output, rest)
+--
+-- instance Applicative (Parser i e) where
+--   pure x = Parser $ \input offset -> Right (offset, x, input)
+--   Parser f <*> Parser p = Parser $ \input offset -> do
+--     (offset', f', rest) <- f input offset
+--     (offset'', x, rest') <- p rest offset'
+--     pure (offset'', f' x, rest')
+--
+-- instance Monad (Parser i e) where
+--   Parser p >>= f = Parser $ \input offset -> do
+--     (offset', x, xs) <- p input offset
+--     runParser (f x) xs offset'
+--
+-- instance (Eq i, Eq e) => Alternative (Parser i e) where
+--   empty = Parser $ \_ _ -> Left [Error 0 Empty]
+--   Parser p <|> Parser t = Parser $ \input offset ->
+--     case p input offset of
+--       Left err -> case t input offset of
+--         Left err' -> Left $ nub $ err <> err'
+--         Right (offset', output, rest) -> Right (offset', output, rest)
+--       Right (offset', output, rest) -> Right (offset', output, rest)
+--
+-- token :: (i -> ErrorType i e) -> (i -> Bool) -> Parser i e i
+-- token mkErr predicate = Parser $ \input offset ->
+--   case input of
+--     [] -> Left [Error offset EndOfInput]
+--     hd : rest
+--       | predicate hd -> Right (offset + 1, hd, rest)
+--       | otherwise -> Left [Error offset $ mkErr hd]
+--
+-- satisfy :: (i -> Bool) -> Parser i e i
+-- satisfy = token Unexpected
+--
+-- char :: (Eq i) => i -> Parser i e i
+-- char i = token (Expected i) (== i)
+--
+-- digit :: Parser Char e Int
+-- digit = do
+--     res <- satisfy isDigit
+--     pure $ digitToInt res
+--
+-- string :: (Eq i) => [i] -> Parser i e [i]
+-- string = traverse char
+--
+-- eof :: Parser i e ()
+-- eof = Parser $ \input offset ->
+--   case input of
+--     [] -> Right (offset, (), [])
+--     hd : _ -> Left [Error offset $ ExpectedEndOfFile hd]
