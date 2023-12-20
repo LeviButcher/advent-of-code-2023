@@ -14,7 +14,8 @@ module Day7
 where
 
 import Data.Char (digitToInt)
-import Data.List (nub, sortBy)
+import Data.List (find, nub, sortBy)
+import Data.Maybe (fromMaybe)
 import Text.ParserCombinators.Parsec
 
 type Card = Char
@@ -57,11 +58,22 @@ game = do
 games :: GenParser Char st [Game]
 games = manyTill game eof
 
+--   Part1 values
+-- cardValue :: Card -> Int
+-- cardValue 'A' = 14
+-- cardValue 'K' = 13
+-- cardValue 'Q' = 12
+-- cardValue 'J' = 11
+-- cardValue 'T' = 10
+-- cardValue c
+--   | c `elem` ['2' .. '9'] = digitToInt c
+--   | otherwise = error "HUGE ERROR"
+--   Part2 values
 cardValue :: Card -> Int
 cardValue 'A' = 14
 cardValue 'K' = 13
 cardValue 'Q' = 12
-cardValue 'J' = 11
+cardValue 'J' = 1
 cardValue 'T' = 10
 cardValue c
   | c `elem` ['2' .. '9'] = digitToInt c
@@ -70,19 +82,27 @@ cardValue c
 data HandType = Highcard | OnePair | TwoPair | ThreeKind | FullHouse | FourKind | FiveKind
   deriving (Eq, Ord, Show)
 
+flipCompare = flip compare
+
 getHandType :: [Card] -> HandType
 getHandType h
-  | fc == 5 = FiveKind
-  | fc == 4 = FourKind
-  | fc == 3 && sc == 2 = FullHouse
-  | fc == 3 = ThreeKind
-  | fc == 2 && sc == 2 = TwoPair
-  | fc == 2 = OnePair
+  | jCount == 5 = FiveKind -- Lazily avoid exception case of indexing array
+  | fj == 5 = FiveKind
+  | fj == 4 = FourKind
+  | fj == 3 && sj == 2 = FullHouse
+  | fj == 3 = ThreeKind
+  | fj == 2 && sj == 2 = TwoPair
+  | fj == 2 = OnePair
+  | jCount > 0 = OnePair
   | otherwise = Highcard
   where
-    counts = sortBy (flip compare) . fmap snd . uniq $ h
-    fc = head counts
-    sc = counts !! 1
+    allCounts = uniq h
+    counts = sortBy (\(_, a) (_, b) -> a `flipCompare` b) $ filter ((/= 'J') . fst) allCounts
+    (_, jCount) = fromMaybe ('J', 0) $ find ((== 'J') . fst) allCounts
+    (_, fc) = head counts
+    (_, sc) = counts !! 1
+    fj = fc + jCount
+    sj = sc
 
 uniq :: (Eq t) => [t] -> [(t, Int)]
 uniq x = (\y -> (y, length . filter (== y) $ x)) <$> g
@@ -119,7 +139,7 @@ example = readFile "inputs/day7.example.txt"
 validExample :: IO ()
 validExample = do
   res <- example >>= part1
-  print $ 6592 `compare` res
+  print $ 6839 `compare` res
 
 input :: IO String
 input = readFile "inputs/day7.txt"
