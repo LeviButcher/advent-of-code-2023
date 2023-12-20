@@ -6,78 +6,41 @@ module Day7
     games,
     cardValue,
     part1,
-    compareHand,
-    handType,
-    firstBetterCard,
-    HandType (..),
+    Hand (..),
     uniq,
     test,
+    validExample,
   )
 where
 
+import Data.Char (digitToInt)
 import Data.List (nub, sortBy)
 import Text.ParserCombinators.Parsec
 
 type Card = Char
 
-type Hand = [Card]
+data Hand = Hand {cards :: ![Card], handType :: !HandType}
+  deriving (Eq, Show)
+
+instance Ord Hand where
+  compare h hh
+    | t == tt = firstBetterCard (cards h) (cards hh)
+    | otherwise = t `compare` tt
+    where
+      t = handType h
+      tt = handType hh
+      firstBetterCard :: [Card] -> [Card] -> Ordering
+      firstBetterCard [] [] = EQ
+      firstBetterCard _ [] = error "Impossible case"
+      firstBetterCard [] _ = error "Impossible case"
+      firstBetterCard (x : xs) (y : ys) =
+        if cardValue x == cardValue y
+          then firstBetterCard xs ys
+          else cardValue x `compare` cardValue y
 
 type Bet = Int
 
 type Game = (Bet, Hand)
-
-cardValue :: Card -> Int
-cardValue 'A' = 14
-cardValue 'K' = 13
-cardValue 'Q' = 12
-cardValue 'J' = 11
-cardValue 'T' = 10
-cardValue '9' = 9
-cardValue '8' = 8
-cardValue '7' = 7
-cardValue '6' = 6
-cardValue '5' = 5
-cardValue '4' = 4
-cardValue '3' = 3
-cardValue '2' = 2
-cardValue _ = -1
-
-data HandType = Highcard | TwoPair | ThreeKind | FullHouse | FourKind | FiveKind
-  deriving (Eq, Ord, Show)
-
-handType :: Hand -> HandType
-handType h
-  | fc == 5 = FiveKind
-  | fc == 4 = FourKind
-  | fc == 3 && sc == 2 = FullHouse
-  | fc == 3 = ThreeKind
-  | fc == 2 = TwoPair
-  | otherwise = Highcard
-  where
-    counts = sortBy (flip compare) . fmap snd . uniq $ h
-    fc = counts !! 0
-    sc = counts !! 1
-
-compareHand :: Hand -> Hand -> Ordering
-compareHand h hh
-  | t == tt = firstBetterCard h hh
-  | t > tt = GT
-  | otherwise = LT
-  where
-    t = handType h
-    tt = handType hh
-
-firstBetterCard :: Hand -> Hand -> Ordering
-firstBetterCard [] [] = EQ
-firstBetterCard (x : xs) (y : ys)
-  | cardValue x > cardValue y = GT
-  | cardValue x < cardValue y = LT
-  | otherwise = firstBetterCard xs ys
-
-uniq :: (Eq t) => [t] -> [(t, Int)]
-uniq x = (\y -> (y, length . filter (== y) $ x)) <$> g
-  where
-    g = nub x
 
 card :: GenParser Char st Card
 card = faceC <|> digitC
@@ -87,21 +50,53 @@ card = faceC <|> digitC
 
 game :: GenParser Char st Game
 game = do
-  cards <- manyTill card space
+  cards' <- manyTill card space
   bet <- manyTill digit newline
-  pure (read bet, cards)
+  pure (read bet, Hand cards' (getHandType cards'))
 
 games :: GenParser Char st [Game]
 games = manyTill game eof
 
+cardValue :: Card -> Int
+cardValue 'A' = 14
+cardValue 'K' = 13
+cardValue 'Q' = 12
+cardValue 'J' = 11
+cardValue 'T' = 10
+cardValue c
+  | c `elem` ['2' .. '9'] = digitToInt c
+  | otherwise = error "HUGE ERROR"
+
+data HandType = Highcard | OnePair | TwoPair | ThreeKind | FullHouse | FourKind | FiveKind
+  deriving (Eq, Ord, Show)
+
+getHandType :: [Card] -> HandType
+getHandType h
+  | fc == 5 = FiveKind
+  | fc == 4 = FourKind
+  | fc == 3 && sc == 2 = FullHouse
+  | fc == 3 = ThreeKind
+  | fc == 2 && sc == 2 = TwoPair
+  | fc == 2 = OnePair
+  | otherwise = Highcard
+  where
+    counts = sortBy (flip compare) . fmap snd . uniq $ h
+    fc = head counts
+    sc = counts !! 1
+
+uniq :: (Eq t) => [t] -> [(t, Int)]
+uniq x = (\y -> (y, length . filter (== y) $ x)) <$> g
+  where
+    g = nub x
+
 sortHands :: [Game] -> [Game]
-sortHands = sortBy (\a b -> snd a `compareHand` snd b)
+sortHands = sortBy (\a b -> snd a `compare` snd b)
 
 totalWinnings :: [Game] -> Int
 totalWinnings h = sum earnings
   where
-    ranked = fmap fst . sortHands $ h
-    earnings = zipWith (*) ranked [1 ..]
+    bets = fmap fst . sortHands $ h
+    earnings = zipWith (*) bets [1 ..]
 
 part1 :: String -> IO Int
 part1 s = do
@@ -112,14 +107,19 @@ part1 s = do
 
 test :: IO ()
 test = do
-  i <- input
+  i <- example
   let res = runParser games () "" i
   case res of
-    Right hands -> writeFile ".temp" (unlines . fmap (show . (\(a, b) -> (handType b, a, b))) . sortHands $ hands)
+    Right hands -> writeFile ".temp" (unlines . fmap show . sortHands $ hands)
     Left _ -> pure ()
 
 example :: IO String
 example = readFile "inputs/day7.example.txt"
+
+validExample :: IO ()
+validExample = do
+  res <- example >>= part1
+  print $ 6592 `compare` res
 
 input :: IO String
 input = readFile "inputs/day7.txt"
