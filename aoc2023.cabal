@@ -33,6 +33,7 @@ library
       Day5
       Day6
       Day7
+      Day8
       Lib
       Parser
   other-modules:
@@ -44,6 +45,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , containers
     , parsec
     , split
     , vector
@@ -61,6 +63,7 @@ executable aoc2023-exe
   build-depends:
       aoc2023
     , base >=4.7 && <5
+    , containers
     , parsec
     , split
     , vector
@@ -79,6 +82,7 @@ test-suite aoc2023-test
   build-depends:
       aoc2023
     , base >=4.7 && <5
+    , containers
     , parsec
     , split
     , vector
