@@ -70,9 +70,6 @@ endsWithA = isSuffixOf "A"
 endsWithZ :: String -> Bool
 endsWithZ = isSuffixOf "Z"
 
--- Build Tree for every key that ends in all A
--- We will traverse every tree, until ever tree current node ends in Z
-
 part1 :: ([Path], [RawNode]) -> IO Int
 part1 (p, rn) = do
   let tree = buildTree "AAA" rn
